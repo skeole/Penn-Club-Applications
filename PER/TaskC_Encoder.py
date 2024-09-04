@@ -1,4 +1,4 @@
-''' DATA FORMAT - list; Assuming < 2^12 - 1 Variables; more than double what current has
+''' CUSTOM DATA FORMAT - list; Assuming < 2^12 - 1 Variables; more than double what current has
 Entries go in this format:
 {
     { // General Variables
@@ -29,7 +29,7 @@ start_time = time.time()
 with open("PERData/TaskA.csv") as fileInput: # CSV-Like Format: Timestamp, ID, Value
     data = list(fileInput)
 
-jason = []
+jason = [] # didn't want to name the json as json because that would probably mess things up, so I'm naming it jason instead
 
 for i in range(4096):
     jason.append([])
@@ -38,11 +38,11 @@ for i in range(len(data)):
     data[i] = data[i].strip()
     if data[i] == "":
         continue
-    if data[i][0] == "P":
+    if data[i][0] == "P": # Header. Need to keep data from header because I think its important to keep
         data[i] = data[i].split()
         jason[0].append(data[i][4])
         jason[0].append(data[i][5] + " " + data[i][6])
-    elif data[i][0] == "V":
+    elif data[i][0] == "V": # Variable definition
         temp = data[i][6:].split(": ")
         
         temp[1] = int(temp[1])
@@ -50,7 +50,7 @@ for i in range(len(data)):
             jason[0].append(temp[1] - 1)
         
         jason[temp[1] - jason[0][2]].append(temp[0])
-    else:
+    else: # Data update
         data[i] = data[i].split(",")
 
         if len(jason[0]) == 3:
@@ -58,7 +58,7 @@ for i in range(len(data)):
 
         data[i][0] = int(data[i][0]) - jason[0][3] # Adjusted Time Stamp
         data[i][1] = int(data[i][1]) - jason[0][2] # Adjusted ID
-        if "." in data[i][2] or data[i][2] == "inf" or data[i][2] == "NaN" or data[i][2] == "-inf":
+        if "." in data[i][2] or data[i][2] == "inf" or data[i][2] == "NaN" or data[i][2] == "-inf": # see which ones need to be converted to int or float
             data[i][2] = float(data[i][2])
         else:
             data[i][2] = int(data[i][2])
@@ -66,9 +66,10 @@ for i in range(len(data)):
         jason[data[i][1]].append(data[i][0])
         jason[data[i][1]].append(data[i][2])
 
-with open("PERData/TaskCEncoded.txt", "w") as outfile:
-    # outfile.write(str(jason)) # - it was around 241 MB with this instead of json.dumps()
-    outfile.write(json.dumps(jason, separators=(",", "")))
+with open("PERData/TaskCEncoded.skeole", "w") as outfile:
+    # outfile.write(str(jason)) # - this worked as well, but was around 238 MB
+    outfile.write(json.dumps(jason, separators=(",", ""))) # json.dumps() allows for more compact formatting than json.dump(), though it takes longer to execute
 
-print("Setup Time : " + str(int((time.time() - start_time) * 100 + 0.5) / 100)) # takes roughly 45 seconds to parse and organize all the data
-# 285 to 204 MB which is roughly a 30% reduction
+print("Time to Run Code : " + str(int((time.time() - start_time) * 100 + 0.5) / 100))
+# takes roughly 50 seconds
+# Compresses the .csv file of 285 MB to into a custom .skeole file of 204 MB, which is roughly a 30% reduction

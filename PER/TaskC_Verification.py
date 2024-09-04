@@ -1,3 +1,10 @@
+# This file checks for lossnessness by converting an already-encoded-and-decoded .csv (which has switched from .csv to .skeole back to .csv)
+    # into a .skeole again, and checking that the two .skeole files produced are equivalent
+    # technically, this does not prove data loss; a true proof would be showing .csv to .skeole to .csv is the same
+    # however, it's not possible to re-convert it into the exact same .csv because the way the data is entered into the .csv is not ordered in a consistent manner
+    # even if it was possible to do so, the time complexity would be too large to do so in a reasonable amount of time
+    # however, you can see that TaskA.csv and TaskCEncodedAndDecoded.txt contain the same amount of non-empty lines lines (16 766 709), an indication that there is no data loss
+
 import time
 import json
 
@@ -45,12 +52,13 @@ for i in range(len(data)):
 
 jason_string = json.dumps(jason, separators=(",", ""))
 
-with open("PERData/TaskCEncoded.txt") as fileInput:
+with open("PERData/TaskCEncoded.skeole") as fileInput:
     data = list(fileInput)[0].strip()
 
-if jason_string == data:
-    print("Encoding and Decoding is lossless!")
+if jason_string == data: # check for equality here
+    print("Encoding and Decoding is lossless!") # yippee :D
 else:
-    print("Something went wrong")
+    print("Something went wrong") # not yippee D:
 
-print("Setup Time : " + str(int((time.time() - start_time) * 100 + 0.5) / 100)) # takes roughly 30 seconds to check for equality
+print("Time to Run Code : " + str(int((time.time() - start_time) * 100 + 0.5) / 100))
+# takes roughly 40 seconds
