@@ -6,7 +6,13 @@ In my opinion, the hardest part was linearly interpolating the data for parts A 
 
 Tasks A & B
 Pros of log file A (csv-like)
+    No need to mark number of bytes
+    Very clear as to what it does: Timestamp, ID, and Value are easy to read
+    ID is not listed in hexadecimal
+    Values are listed straight up, not as an endian
 Pros of log file B (.txt)
+    Because everything is listed in bit form, it's probably easier to write to this file type
+    Ability to store multiple pieces of data together under the same ID, rather than hope they are logged at the same time as separate entries
 
 Through this challenge, I learned how to better parse data to both reduce variable size, as well as improve processing speed. I was able to accomplish such parsing methods to efficiently analyze all the data that needed to be analyzed, without wasted RAM. 
 
